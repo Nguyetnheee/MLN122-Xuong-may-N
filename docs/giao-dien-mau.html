@@ -1,0 +1,635 @@
+<title>Ca làm 3 phút</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<style>
+/* Bố cục: thanh chọn màn hình ở trên; màn sinh viên nằm trong khung điện thoại, màn chủ xưởng trải rộng như trang web. Một giao diện sáng duy nhất (trắng – xanh lá) theo yêu cầu. */
+:root{
+  --paper:#FFFFFF; --ledger:#F2F7F3; --rule:#D3E4D8; --ink:#142019; --ink2:#4A5D51; --ink3:#2E4537;
+  --green:#1D6B43; --leaf:#2F8F5B; --mint:#E3EEE6; --muted-btn:#C9DCCF;
+  --amber:#A65F00; --amber-deep:#8A4F00; --amber-fill:#E8A23A; --amber-soft:#F2C47A; --amber-tint:#FBEBD3;
+  --font:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+button,input{font-family:inherit;color:inherit}
+a{color:var(--green)}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.hatch{background:repeating-linear-gradient(135deg,var(--amber-fill) 0 7px,var(--amber-soft) 7px 14px)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Thanh điều hướng */
+.top{max-width:1240px;margin:0 auto;padding-block:20px 12px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+.nav{display:flex;flex-wrap:wrap;gap:14px}
+.navgroup{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.navgroup span{font-size:13px;color:var(--ink2);margin-right:4px}
+.navgroup button{min-height:40px;padding:0 12px;border:1px solid var(--rule);border-radius:10px;background:var(--paper);font-size:14px;font-weight:600;cursor:pointer}
+.navgroup button[aria-current="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.stage{max-width:1240px;margin:0 auto;padding-block:8px 48px}
+.caption{font-size:14px;color:var(--ink2);margin-bottom:14px}
+
+/* Khung điện thoại */
+.phone{width:390px;max-width:100%;min-height:800px;margin:0 auto;border:2px solid var(--rule);border-radius:34px;overflow:hidden;display:flex;flex-direction:column;background:var(--paper);position:relative}
+.ph-pad{padding:24px}
+.grow{flex-grow:1}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--green);color:#fff;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn[disabled]{background:var(--muted-btn);color:var(--ink3);cursor:not-allowed}
+.btn.ghost{background:var(--paper);border:2px solid var(--green);color:var(--green);font-size:15px;min-height:50px}
+.btn.soft{background:var(--ledger);color:var(--ink3)}
+.lines{display:flex;flex-direction:column}
+.line{min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--rule)}
+.line:last-child{border-bottom:0}
+.line .k{color:var(--ink2);font-size:14px}
+.line .v{font-weight:600;font-size:15px;text-align:right}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--ink2)}
+.field input{height:52px;border:2px solid var(--rule);border-radius:12px;background:var(--paper);padding:0 16px;font-size:17px;color:var(--ink)}
+.status{display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:14px;background:var(--ledger)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--leaf);flex-shrink:0}
+.warn{font-size:14px;color:var(--amber);font-weight:600}
+
+/* Hợp đồng */
+.contract{margin:4px 20px 0;border:2px solid var(--rule);border-radius:18px;padding:22px 20px 18px;position:relative}
+.stamp{position:absolute;right:18px;top:18px;width:92px;height:92px;border:3px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--green);font-weight:800;font-size:18px;transform:rotate(-14deg);background:rgba(255,255,255,.9);animation:stamp .42s cubic-bezier(.2,.8,.2,1) both}
+@keyframes stamp{0%{transform:rotate(-14deg) scale(1.8);opacity:0}60%{transform:rotate(-14deg) scale(.94);opacity:1}100%{transform:rotate(-14deg) scale(1)}}
+
+/* Màn may áo */
+.big{font-size:44px;font-weight:800;line-height:1;letter-spacing:-.02em}
+.bar{height:6px;border-radius:3px;background:var(--mint);overflow:hidden}
+.bar i{display:block;height:6px;background:var(--leaf);transition:width 1s linear}
+.shirts{min-height:48px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
+.seq{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.seq li{height:64px;border-radius:12px;border:2px solid var(--rule);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:600;line-height:1.15}
+.seq li small{font-size:12px;font-weight:700}
+.seq li.next{border-color:var(--green)}
+.seq li.done{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.pads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pad{height:108px;border:2px solid var(--muted-btn);border-radius:18px;background:var(--paper);font-size:19px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;touch-action:manipulation}
+.pad:active{transform:scale(.97)}
+.shake{animation:shake .26s ease}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* Phiếu lương */
+.slip{margin:22px 20px 0;background:var(--paper);border-radius:18px;padding:20px 22px}
+.perf{height:0;border-top:2px dashed var(--rule);margin:8px 0 14px}
+
+/* Lật bài */
+.timecard{margin:20px 20px 0;padding:16px;border:2px solid var(--rule);border-radius:18px}
+.ticks{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);padding:0 2px}
+.split{margin-top:6px;height:56px;display:flex;border-radius:10px;overflow:hidden;font-size:13px;font-weight:700}
+.split .g{width:33.333%;background:var(--leaf);color:#fff;display:flex;align-items:center;justify-content:center}
+.split .a{width:66.667%;color:#3D2600;display:flex;align-items:center;justify-content:center;transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) .3s both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.legend2{margin-top:14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;font-size:13px;color:var(--ink2)}
+.legend2 b{display:flex;align-items:center;gap:6px;font-size:13px}
+.sw{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.terms{margin:0 20px 14px;padding:16px 18px;border:2px solid var(--green);border-radius:14px}
+
+/* Trang chủ xưởng */
+.admin{border:2px solid var(--rule);border-radius:20px;overflow:hidden;background:var(--paper)}
+.ahead{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;border-bottom:1px solid var(--rule)}
+.chip{padding:4px 10px;border-radius:999px;background:var(--ledger);font-size:13px;color:var(--ink3);font-weight:500}
+.abody{padding:28px 24px 36px;display:flex;flex-wrap:wrap;gap:32px}
+.main{flex:999 1 520px;min-width:0}
+.side{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.panel{border:2px solid var(--rule);border-radius:18px;padding:22px}
+.sbtn{min-height:44px;padding:0 18px;border:2px solid var(--green);border-radius:12px;background:var(--paper);color:var(--green);font-size:15px;font-weight:700;cursor:pointer}
+.sbtn.fill{background:var(--green);color:#fff}
+.sbtn.plain{border-color:transparent;background:var(--ledger);color:var(--ink3)}
+.check{display:flex;align-items:center;gap:8px;min-height:44px;font-size:14px;cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--green)}
+.login{display:flex;flex-wrap:wrap;min-height:640px}
+.login .l{flex:1 1 380px;background:var(--green);color:#fff;padding:44px 48px;display:flex;flex-direction:column;justify-content:space-between;gap:36px;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 63px,rgba(255,255,255,.12) 63px,rgba(255,255,255,.12) 64px)}
+.login .r{flex:999 1 340px;padding:44px 24px;display:flex;align-items:center;justify-content:center}
+.players{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.players li{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:var(--ledger);border:1px solid var(--rule);font-size:15px;font-weight:600}
+.players li.wait{background:var(--paper);border-color:#E6D3B3}
+.players li.wait .dot{background:var(--amber-fill)}
+.players li .dot{width:8px;height:8px}
+.players small{font-weight:400;font-size:12px;color:var(--ink2)}
+.qr{width:200px;height:200px;border:2px dashed #9DC3AA;border-radius:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;color:var(--ink2);padding:20px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid2 input{height:46px;font-size:17px;font-weight:700;padding:0 12px}
+.board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.board li{display:grid;grid-template-columns:32px minmax(0,140px) minmax(0,1fr) 48px;align-items:center;gap:12px;min-height:36px}
+.track{height:22px;border-radius:6px;background:var(--mint);overflow:hidden}
+.track i{display:block;height:22px;background:var(--leaf);border-radius:6px;transition:width .6s ease}
+.flow{display:flex;flex-direction:column;gap:14px}
+.flow .row{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr) 130px;align-items:center;gap:16px}
+.flow .tr{height:44px;position:relative;background:var(--ledger);border-radius:8px}
+.flow .tr i{position:absolute;top:0;bottom:0;border-radius:8px;transform-origin:left;animation:grow .7s cubic-bezier(.2,.8,.2,1) both}
+.flow .val{font-size:24px;font-weight:800;text-align:right}
+.tag{font-size:14px;font-weight:600;margin-top:2px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.tile{padding:22px;border-radius:18px}
+.stack{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));column-gap:40px;row-gap:6px}
+.stack li{display:grid;grid-template-columns:minmax(0,110px) minmax(0,1fr) 54px;align-items:center;gap:10px;min-height:26px;font-size:14px}
+.stack .s{height:16px;display:flex}
+.tablebox{overflow:auto;max-height:440px;border:2px solid var(--rule);border-radius:16px}
+table{width:100%;min-width:680px;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{padding:10px 16px;text-align:right}
+thead th{position:sticky;top:0;background:var(--ledger);font-weight:700}
+tbody tr{border-top:1px solid var(--mint)}
+th:first-child{text-align:left}
+tbody th{font-weight:600}
+
+@media (max-width:640px){
+  .flow .row{grid-template-columns:1fr 90px}
+  .flow .tr{grid-column:1 / -1;order:3}
+  .login .l{padding:32px 24px}
+}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--green)"><path d="M10 4 L4 8 L6 13 L8 12 L8 24 L20 24 L20 12 L22 13 L24 8 L18 4 C17 6 15.5 7 14 7 C12.5 7 11 6 10 4 Z"></path></svg>
+    Ca làm 3 phút
+  </div>
+  <nav class="nav" aria-label="Chọn màn hình">
+    <div class="navgroup"><span>Sinh viên</span>
+      <button type="button" data-go="sv1">Vào phòng</button>
+      <button type="button" data-go="sv2">Hợp đồng</button>
+      <button type="button" data-go="sv3">May áo</button>
+      <button type="button" data-go="sv4">Phiếu lương</button>
+      <button type="button" data-go="sv5">Lật bài</button>
+    </div>
+    <div class="navgroup"><span>Chủ xưởng</span>
+      <button type="button" data-go="cx1">Đăng nhập</button>
+      <button type="button" data-go="cx2">Phòng chờ</button>
+      <button type="button" data-go="cx3">Đang chạy ca</button>
+      <button type="button" data-go="cx4">Lật sổ sách</button>
+    </div>
+  </nav>
+</header>
+
+<main class="stage">
+
+<!-- SINH VIÊN 1 -->
+<section id="sv1" data-view>
+  <p class="caption">Điện thoại sinh viên. Số liệu là ví dụ minh họa.</p>
+  <div class="phone">
+    <div class="ph-pad" style="padding-top:56px">
+      <h1 style="font-size:40px;line-height:1.08;font-weight:800;letter-spacing:-.02em">Vào ca làm</h1>
+      <p style="margin-top:12px;font-size:16px;color:var(--ink2);max-width:300px">Nhập mã phòng trên máy chiếu và tên của bạn để nhận việc.</p>
+    </div>
+    <div style="margin:8px 24px 0;padding:20px;background:var(--ledger);border-radius:18px;display:flex;flex-direction:column;gap:14px">
+      <label class="field" for="room">Mã phòng
+        <input id="room" inputmode="numeric" maxlength="4" value="4827" style="height:64px;font-size:32px;font-weight:700;letter-spacing:.3em" class="num">
+      </label>
+      <label class="field" for="pname">Tên của bạn
+        <input id="pname" value="Tuấn Kiệt" placeholder="Ví dụ: Tuấn Kiệt">
+      </label>
+      <p id="joinErr" class="warn" role="alert" hidden>Điền đủ mã phòng 4 số và tên để vào phòng.</p>
+    </div>
+    <div class="grow"></div>
+    <div class="ph-pad" style="display:flex;flex-direction:column;gap:12px">
+      <button type="button" class="btn" id="joinBtn">Vào phòng</button>
+      <p style="text-align:center;font-size:13px;color:var(--ink2)">Không cần đăng ký tài khoản.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SINH VIÊN 2 -->
+<section id="sv2" data-view hidden>
+  <p class="caption">Sinh viên chỉ thấy lương và thời gian. Giá áo và nguyên liệu bị giấu.</p>
+  <div class="phone">
+    <div class="ph-pad" style="padding-bottom:12px;font-size:13px;color:var(--ink2);text-align:right">Phòng 4827</div>
+    <div class="contract">
+      <h1 style="font-size:26px;font-weight:800">Hợp đồng lao động</h1>
+      <p style="margin:4px 0 12px;font-size:13px;color:var(--ink2)">Số 4827/HĐ, ca làm hôm nay</p>
+      <div class="lines">
+        <div class="line"><span class="k">Bên thuê</span><span class="v">Xưởng May ABC</span></div>
+        <div class="line"><span class="k">Người lao động</span><span class="v" data-name>Tuấn Kiệt</span></div>
+        <div class="line"><span class="k">Công việc</span><span class="v">May áo</span></div>
+        <div class="line"><span class="k">Thời gian</span><span class="v">1 ca, 3 phút</span></div>
+        <div class="line"><span class="k">Nguyên liệu</span><span class="v">Xưởng cung cấp</span></div>
+        <div class="line" style="min-height:64px"><span class="k">Lương cả ca</span><span class="num" style="font-size:30px;font-weight:800;color:var(--green)">20 xu</span></div>
+      </div>
+      <p style="margin-top:8px;font-size:13px;color:var(--ink2)">Lương trả đủ khi hết ca, không phụ thuộc số áo may được.</p>
+      <div class="stamp" id="stamp" aria-hidden="true" hidden>Đã ký</div>
+    </div>
+    <div class="grow"></div>
+    <div class="ph-pad" id="signBox" style="display:flex;flex-direction:column;gap:14px">
+      <label class="check" for="agree" style="font-size:15px"><input type="checkbox" id="agree">Tôi đã đọc và đồng ý với hợp đồng</label>
+      <button type="button" class="btn" id="signBtn" disabled>Ký hợp đồng</button>
+    </div>
+    <div class="ph-pad" id="waitBox" style="display:flex;flex-direction:column;gap:14px" hidden>
+      <div class="status" role="status"><span class="dot"></span><div><b>Đã ký. Chờ chủ xưởng bắt đầu ca</b><div style="font-size:13px;color:var(--ink2)">Màn hình sẽ tự chuyển khi ca bắt đầu.</div></div></div>
+      <button type="button" class="btn ghost" data-go="sv3">Bản thử: sang màn hình may áo</button>
+    </div>
+  </div>
+</section>
+
+<!-- SINH VIÊN 3 -->
+<section id="sv3" data-view hidden>
+  <p class="caption">Chơi thử được: bấm 4 nút theo đúng thứ tự để may 1 áo.</p>
+  <div class="phone">
+    <div class="ph-pad" style="padding-bottom:0;display:flex;justify-content:space-between;align-items:flex-end">
+      <div><div style="font-size:13px;color:var(--ink2)">Còn lại</div><div class="big num" id="clock">3:00</div></div>
+      <div style="text-align:right"><div style="font-size:13px;color:var(--ink2)">Áo đã may</div><div class="big num" id="count" role="status" style="color:var(--green)">0</div></div>
+    </div>
+    <div style="margin:14px 24px 0" class="bar"><i id="timebar" style="width:100%"></i></div>
+    <div class="shirts" id="shirts" style="margin:14px 24px 0" aria-hidden="true"></div>
+    <div style="margin:6px 20px 0;padding:18px;border-radius:18px;background:var(--ledger)">
+      <div style="font-size:14px;font-weight:600;color:var(--ink3);margin-bottom:12px">Bấm theo đúng thứ tự này</div>
+      <ol class="seq" id="seq"></ol>
+      <p class="warn" id="wrong" role="alert" style="margin-top:12px" hidden>Sai thứ tự. Làm lại chiếc áo này từ bước 1.</p>
+    </div>
+    <div class="grow"></div>
+    <div class="ph-pad" id="idleBox" style="display:flex;flex-direction:column;gap:12px">
+      <p style="font-size:14px;color:var(--ink2)">Trong buổi học, ca bắt đầu khi chủ xưởng bấm nút. Ở bản thử, bạn tự bắt đầu.</p>
+      <button type="button" class="btn" id="startBtn">Bắt đầu ca</button>
+    </div>
+    <div id="workBox" hidden>
+      <div class="pads" id="pads" style="padding:0 20px"></div>
+      <div style="text-align:center;padding:8px 0 16px"><button type="button" id="finishBtn" style="min-height:44px;border:0;background:none;color:var(--ink2);font-size:13px;text-decoration:underline;cursor:pointer">Bản thử: kết thúc ca ngay</button></div>
+    </div>
+    <div class="ph-pad" id="doneBox" style="display:flex;flex-direction:column;gap:12px" hidden>
+      <div class="status" role="status"><b>Hết ca. Bạn đã may <span id="doneCount">0</span> chiếc áo.</b></div>
+      <button type="button" class="btn" data-go="sv4">Nhận lương</button>
+    </div>
+  </div>
+</section>
+
+<!-- SINH VIÊN 4 -->
+<section id="sv4" data-view hidden>
+  <p class="caption">Ai cũng nhận đúng 20 xu, dù may nhiều hay ít.</p>
+  <div class="phone" style="background:var(--ledger)">
+    <div class="ph-pad" style="padding-top:32px;padding-bottom:0">
+      <div style="font-size:13px;color:var(--ink2)">Ca 1 đã kết thúc</div>
+      <h1 style="font-size:30px;font-weight:800;margin-top:4px">Phiếu lương của bạn</h1>
+    </div>
+    <div class="slip">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);margin-bottom:8px"><span>Xưởng May ABC</span><span>Phòng 4827</span></div>
+      <div class="lines">
+        <div class="line"><span class="k">Công nhân</span><span class="v" data-name>Tuấn Kiệt</span></div>
+        <div class="line"><span class="k">Thời gian làm</span><span class="v">3 phút</span></div>
+        <div class="line"><span class="k">Số áo đã may</span><span class="v num"><span id="slipCount">15</span> chiếc</span></div>
+        <div class="line"><span class="k">Lương theo hợp đồng</span><span class="v num">20 xu</span></div>
+      </div>
+      <div class="perf" aria-hidden="true"></div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between"><b style="font-size:16px">Thực nhận</b><span class="num" style="font-size:52px;font-weight:800;color:var(--green);letter-spacing:-.02em">20 xu</span></div>
+    </div>
+    <div style="margin:14px 20px 0;padding:16px 18px;border-radius:14px;background:var(--paper);display:flex;justify-content:space-between"><span style="color:var(--ink2)">Xếp hạng số áo</span><b class="num" style="font-size:18px">10 / 30</b></div>
+    <div class="grow"></div>
+    <div class="ph-pad" style="display:flex;flex-direction:column;gap:14px">
+      <p style="font-size:15px;color:var(--ink3)">Nhìn lên máy chiếu. Chủ xưởng sắp mở sổ sách của ca vừa rồi.</p>
+      <button type="button" class="btn ghost" data-go="sv5">Bản thử: sang Vòng 2</button>
+    </div>
+  </div>
+</section>
+
+<!-- SINH VIÊN 5 -->
+<section id="sv5" data-view hidden>
+  <p class="caption">Vòng 2 trên điện thoại: mỗi bạn thấy 3 phút của mình bị chia thế nào.</p>
+  <div class="phone">
+    <div class="ph-pad" style="padding-bottom:0">
+      <div style="font-size:13px;color:var(--ink2)">Vòng 2, <span data-name>Tuấn Kiệt</span></div>
+      <h1 style="font-size:30px;line-height:1.15;font-weight:800;margin-top:4px">3 phút của bạn đã đi đâu?</h1>
+    </div>
+    <div class="timecard">
+      <div class="ticks num"><span>0:00</span><span>1:00</span><span>2:00</span><span>3:00</span></div>
+      <div class="split" role="img" aria-label="Phút đầu bạn làm đủ tiền lương, hai phút sau làm cho chủ xưởng">
+        <div class="g">5 áo</div><div class="a hatch">10 áo</div>
+      </div>
+      <div class="legend2">
+        <div><b style="color:var(--green)"><span class="sw" style="background:var(--leaf)"></span><span id="gName">Làm cho mình</span></b>0:00 đến 1:00. Bạn đã làm ra đủ 20 xu tiền lương.</div>
+        <div><b style="color:var(--amber)"><span class="sw hatch"></span><span id="aName">Làm cho chủ xưởng</span></b>1:00 đến 3:00. Mọi thứ bạn làm ra thuộc về chủ.</div>
+      </div>
+    </div>
+    <div style="margin:14px 20px 0;padding:6px 18px;border-radius:18px;background:var(--ledger)">
+      <p style="margin:10px 0 4px;font-size:13px;color:var(--ink2)">Mỗi áo bán 10 xu, nguyên liệu 6 xu. Bạn thêm vào 4 xu mỗi áo.</p>
+      <div class="lines">
+        <div class="line"><span>Bạn tạo ra (15 × 4)</span><b class="num" style="font-size:18px">60 xu</b></div>
+        <div class="line"><span>Bạn nhận</span><b class="num" style="font-size:18px;color:var(--green)">20 xu</b></div>
+        <div class="line"><span>Chủ xưởng giữ</span><b class="num" style="font-size:18px;color:var(--amber)">40 xu</b></div>
+      </div>
+    </div>
+    <div class="grow"></div>
+    <div class="terms" id="termsBox" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><b>Giá trị thặng dư (m)</b><b class="num" style="font-size:22px;color:var(--amber)">40 xu</b></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:6px"><span style="color:var(--ink2)">Tỷ suất m′ = 40 ÷ 20</span><b class="num" style="font-size:22px">200%</b></div>
+    </div>
+    <div class="ph-pad" style="padding-top:0"><button type="button" class="btn" id="termsBtn" aria-pressed="false">Hiện tên gọi theo Mác</button></div>
+  </div>
+</section>
+
+<!-- CHỦ XƯỞNG 1 -->
+<section id="cx1" data-view hidden>
+  <p class="caption">Laptop chủ xưởng. Chỉ chủ xưởng cần đăng nhập.</p>
+  <div class="admin login">
+    <div class="l">
+      <div style="font-weight:700">Xưởng May ABC</div>
+      <div>
+        <h1 style="font-size:52px;line-height:1.02;font-weight:800;letter-spacing:-.03em">Ca làm 3 phút</h1>
+        <p style="margin-top:18px;font-size:17px;color:#D6EBDD;max-width:420px">Trò chơi mở đầu cho bài Giá trị thặng dư, môn MLN122. Chỉ chủ xưởng thấy sổ sách thật của ca làm.</p>
+      </div>
+      <div style="font-size:14px;color:#BFE0CB">Sinh viên vào chơi bằng mã phòng, không cần đăng nhập.</div>
+    </div>
+    <div class="r">
+      <form id="loginForm" style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:8px">Đăng nhập chủ xưởng</h2>
+        <label class="field" for="user">Tên đăng nhập<input id="user" autocomplete="username" value="chuxuong"></label>
+        <label class="field" for="pass">Mật khẩu<input id="pass" type="password" autocomplete="current-password" value="mln122"></label>
+        <p id="loginErr" class="warn" role="alert" hidden>Nhập tên đăng nhập và mật khẩu để tiếp tục.</p>
+        <button type="submit" class="btn" style="margin-top:8px">Đăng nhập</button>
+        <p style="font-size:13px;color:var(--ink2)">Bản thật: tài khoản đặt trong biến môi trường của dự án trên Vercel.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CHỦ XƯỞNG 2 -->
+<section id="cx2" data-view hidden>
+  <p class="caption">Phòng chờ, chiếu lên cho lớp quét mã. Ô cài đặt bên phải chỉ chủ xưởng thấy.</p>
+  <div class="admin">
+    <div class="ahead"><div style="display:flex;gap:10px;align-items:center"><b>Xưởng May ABC</b><span class="chip">Phòng chờ</span></div><button type="button" class="sbtn plain" data-go="cx1">Đăng xuất</button></div>
+    <div class="abody">
+      <div class="main" style="display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;flex-wrap:wrap;gap:28px;align-items:center">
+          <div style="flex:1 1 260px">
+            <div style="font-size:17px;color:var(--ink2)">Vào phòng tại</div>
+            <div style="font-size:24px;font-weight:700">[ĐỊA CHỈ WEB CỦA NHÓM]</div>
+            <div style="font-size:17px;color:var(--ink2);margin-top:20px">Mã phòng</div>
+            <div class="num" style="font-size:clamp(72px,12vw,128px);line-height:.95;font-weight:800;letter-spacing:.06em;color:var(--green)">4827</div>
+          </div>
+          <div class="qr" role="img" aria-label="Chỗ đặt mã QR">Mã QR tạo tự động từ địa chỉ web và mã phòng</div>
+        </div>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px"><h2 style="font-size:22px;font-weight:800">Công nhân đã vào</h2><b class="num" style="font-size:18px">27 / 30 <span style="font-weight:500;font-size:15px;color:var(--ink2)">(24 đã ký)</span></b></div>
+          <ul class="players" id="players"></ul>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="panel">
+          <h2 style="font-size:18px;font-weight:800">Cài đặt ca làm</h2>
+          <p style="margin:6px 0 16px;font-size:13px;color:var(--ink2)">Sinh viên chỉ thấy lương và thời gian. Giá áo và nguyên liệu được giấu đến Vòng 2.</p>
+          <div class="grid2">
+            <label class="field" for="sSecs">Thời gian ca (giây)<input id="sSecs" type="number" value="180"></label>
+            <label class="field" for="sWage">Lương cả ca (xu)<input id="sWage" type="number" value="20"></label>
+            <label class="field" for="sPrice">Giá bán 1 áo (xu)<input id="sPrice" type="number" value="10"></label>
+            <label class="field" for="sMat">Nguyên liệu 1 áo (xu)<input id="sMat" type="number" value="6"></label>
+          </div>
+          <div style="margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--ledger);display:flex;flex-direction:column;gap:6px;font-size:14px">
+            <div style="display:flex;justify-content:space-between"><span>Giá trị mới mỗi áo</span><b class="num" id="newVal">4 xu</b></div>
+            <div style="display:flex;justify-content:space-between"><span>Cần may để đủ lương</span><b class="num" id="needed">5 áo</b></div>
+          </div>
+          <p class="warn" id="cfgErr" role="alert" style="margin-top:10px;font-size:13px" hidden>Giá bán phải lớn hơn nguyên liệu, nếu không áo không tạo ra giá trị mới.</p>
+        </div>
+        <button type="button" class="btn" data-go="cx3">Bắt đầu ca</button>
+        <p style="font-size:13px;color:var(--ink2)">Những bạn chưa ký hợp đồng sẽ không vào được ca này.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- CHỦ XƯỞNG 3 -->
+<section id="cx3" data-view hidden>
+  <p class="caption">Bấm “Chạy ca” để xem mô phỏng 30 bạn đang may. Bật chế độ chiếu trước khi share màn hình.</p>
+  <div class="admin">
+    <div class="ahead">
+      <div style="display:flex;gap:10px;align-items:center"><b>Xưởng May ABC</b><span class="chip">Vòng 1, phòng 4827</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <label class="check" for="projector"><input type="checkbox" id="projector">Chế độ chiếu: ẩn sổ sách</label>
+        <button type="button" class="sbtn" id="runBtn">Chạy ca</button>
+        <button type="button" class="sbtn plain" id="endBtn">Kết thúc ca</button>
+      </div>
+    </div>
+    <div class="abody">
+      <div class="main">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+          <div><div style="color:var(--ink2)">Còn lại</div><div class="num" id="liveClock" style="font-size:clamp(64px,9vw,104px);line-height:.95;font-weight:800;letter-spacing:-.03em">3:00</div></div>
+          <div style="text-align:right"><div style="color:var(--ink2)">Cả lớp đã may</div><div class="num" style="font-size:clamp(44px,6vw,72px);line-height:1;font-weight:800;color:var(--green)"><span id="liveTotal">0</span> <span style="font-size:26px">áo</span></div></div>
+        </div>
+        <h2 style="margin:28px 0 12px;font-size:20px;font-weight:800">Mười công nhân may nhiều nhất</h2>
+        <ol class="board" id="board"></ol>
+        <div id="liveDone" class="status" style="margin-top:24px;flex-wrap:wrap;justify-content:space-between" hidden><b style="font-size:17px">Hết ca. Mọi công nhân nhận 20 xu.</b><button type="button" class="sbtn fill" data-go="cx4">Sang Vòng 2: lật sổ sách</button></div>
+      </div>
+      <aside class="side" id="books">
+        <div class="panel">
+          <h2 style="font-size:18px;font-weight:800">Sổ sách của chủ xưởng</h2>
+          <p style="margin:6px 0 12px;font-size:13px;color:var(--ink2)">Chỉ hiện trên laptop.</p>
+          <div class="lines">
+            <div class="line"><span>Tiền bán áo</span><b class="num" id="bRev">0 xu</b></div>
+            <div class="line"><span>Nguyên liệu</span><b class="num" id="bMat">− 0 xu</b></div>
+            <div class="line"><span>Lương phải trả</span><b class="num">− 600 xu</b></div>
+          </div>
+          <div id="leftBox" style="margin-top:12px;padding:16px;border-radius:12px;background:var(--ledger)">
+            <div style="font-size:14px;color:var(--ink3)">Chủ xưởng còn lại</div>
+            <div class="num" id="bLeft" style="font-size:38px;font-weight:800">− 600 xu</div>
+            <div id="bNote" style="font-size:13px;color:var(--ink2)">Chưa đủ tiền trả lương. Công nhân đang làm ra phần lương của chính họ.</div>
+          </div>
+        </div>
+        <label class="check" for="fast" style="font-size:13px;color:var(--ink2)"><input type="checkbox" id="fast" checked>Bản thử: chạy nhanh gấp 10</label>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- CHỦ XƯỞNG 4 -->
+<section id="cx4" data-view hidden>
+  <p class="caption">Vòng 2 chiếu lên lớp. Bấm “Hiện tên gọi theo Mác” khi bắt đầu giảng lý thuyết.</p>
+  <div class="admin">
+    <div class="ahead">
+      <div style="display:flex;gap:10px;align-items:center"><b>Xưởng May ABC</b><span class="chip">Vòng 2, phòng 4827</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button type="button" class="sbtn fill" id="ledgerTerms" aria-pressed="false">Hiện tên gọi theo Mác</button>
+        <button type="button" class="sbtn" id="csvBtn">Xuất CSV</button>
+        <button type="button" class="sbtn plain" data-go="cx2">Chơi lại</button>
+      </div>
+    </div>
+    <p id="csvNote" role="status" style="padding:10px 24px;background:var(--ledger);font-size:14px;color:var(--ink3)" hidden>Bản thử: ở bản thật, nút này tải file ket-qua-phong-4827.csv gồm bảng tổng kết bên dưới.</p>
+    <div style="padding:32px 24px 44px;display:flex;flex-direction:column;gap:44px">
+      <div>
+        <h1 style="font-size:clamp(32px,4.5vw,46px);line-height:1.08;font-weight:800;letter-spacing:-.02em">Sổ sách thật của ca làm vừa rồi</h1>
+        <p style="margin-top:10px;font-size:17px;color:var(--ink2)">30 công nhân, 3 phút, 432 chiếc áo. Mỗi áo bán 10 xu, nguyên liệu 6 xu.</p>
+        <div class="flow" id="flow" style="margin-top:28px"></div>
+      </div>
+      <div class="tiles">
+        <div class="tile" style="background:var(--amber-tint)"><div id="ratioName" style="color:#5C3A00">Phần dư so với tiền lương</div><div class="num" style="font-size:60px;line-height:1.05;font-weight:800;color:var(--amber-deep)">188%</div><div style="font-size:14px;color:#5C3A00">1.128 xu ÷ 600 xu tiền lương</div></div>
+        <div class="tile" style="background:var(--ledger)"><div style="color:var(--ink3)">Trung bình mỗi bạn làm đủ lương sau</div><div class="num" id="avgTime" style="font-size:60px;line-height:1.05;font-weight:800;color:var(--green)">1:05</div><div style="font-size:14px;color:var(--ink3)">trên tổng 3:00 của ca</div></div>
+        <div class="tile" style="border:2px solid var(--rule);display:flex;flex-direction:column;justify-content:center;gap:14px"><div><div style="font-size:14px;color:var(--ink2)">May nhiều nhất</div><b style="font-size:19px">Minh Anh, 24 áo, nhận 20 xu</b></div><div><div style="font-size:14px;color:var(--ink2)">May ít nhất</div><b style="font-size:19px">Gia Bảo, 7 áo, nhận 20 xu</b></div></div>
+      </div>
+      <div>
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:12px">
+          <h2 style="font-size:24px;font-weight:800">Mỗi người tạo ra bao nhiêu, nhận bao nhiêu</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:16px;font-size:14px"><span style="display:flex;align-items:center;gap:6px"><span class="sw" style="width:14px;height:14px;background:var(--leaf)"></span><span id="kG">Phần trả lương</span></span><span style="display:flex;align-items:center;gap:6px"><span class="sw hatch" style="width:14px;height:14px"></span><span id="kA">Phần cho chủ xưởng</span></span></div>
+        </div>
+        <ol class="stack" id="stack"></ol>
+      </div>
+      <div>
+        <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">Bảng tổng kết</h2>
+        <div class="tablebox">
+          <table>
+            <thead><tr><th scope="col">Công nhân</th><th scope="col">Số áo</th><th scope="col">Giá trị tạo ra</th><th scope="col">Lương nhận</th><th scope="col">Phần cho chủ</th><th scope="col">Đủ lương sau</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var DATA = [["Minh Anh",24],["Gia Huy",22],["Thảo Vy",21],["Quốc Bảo",19],["Ngọc Hân",18],["Đức Trí",17],["Khánh Linh",17],["Hoàng Nam",16],["Phương Uyên",16],["Tuấn Kiệt",15],["Bảo Ngọc",15],["Thành Đạt",15],["Mai Chi",15],["Nhật Minh",14],["Hà My",14],["Anh Khoa",14],["Thu Trang",14],["Việt Hoàng",13],["Diệu Linh",13],["Trọng Phúc",13],["Yến Nhi",13],["Công Danh",12],["Lan Anh",12],["Hải Đăng",12],["Quỳnh Như",11],["Minh Quân",11],["Tường Vi",10],["Đăng Khôi",10],["Hồng Nhung",9],["Gia Bảo",7]];
+  var fmt = function(n){ return n.toLocaleString('vi-VN'); };
+  var mmss = function(s){ s = Math.max(0, Math.round(s)); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); };
+  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+
+  /* Điều hướng */
+  var views = Array.prototype.slice.call(document.querySelectorAll('[data-view]'));
+  function go(id){
+    if (!$(id)) id = 'sv1';
+    views.forEach(function(v){ v.hidden = v.id !== id; });
+    document.querySelectorAll('.navgroup button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.go === id ? 'true' : 'false'); });
+    try { history.replaceState(null, '', '#' + id); } catch(e) {}
+    window.scrollTo(0, 0);
+  }
+  document.addEventListener('click', function(e){ var t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
+  go((location.hash || '#sv1').slice(1));
+
+  /* SV1 */
+  function setName(){ var n = $('pname').value.trim() || 'Bạn'; document.querySelectorAll('[data-name]').forEach(function(el){ el.textContent = n; }); }
+  $('room').addEventListener('input', function(){ this.value = this.value.replace(/\D/g,'').slice(0,4); });
+  $('pname').addEventListener('input', setName);
+  $('joinBtn').addEventListener('click', function(){
+    var ok = $('room').value.length === 4 && $('pname').value.trim() !== '';
+    $('joinErr').hidden = ok; if (ok) { setName(); go('sv2'); }
+  });
+
+  /* SV2 */
+  $('agree').addEventListener('change', function(){ $('signBtn').disabled = !this.checked; });
+  $('signBtn').addEventListener('click', function(){ $('stamp').hidden = false; $('signBox').hidden = true; $('waitBox').hidden = false; });
+
+  /* SV3: trò chơi may áo */
+  var NAMES = {co:'Cổ áo', trai:'Tay trái', phai:'Tay phải', than:'Thân áo'};
+  var ICON = {co:'M9 6 C10.5 9 12 10 14 10 C16 10 17.5 9 19 6 M9 6 L19 6', trai:'M18 6 L8 10 L5 18 L10 20 L12 14', phai:'M10 6 L20 10 L23 18 L18 20 L16 14', than:'M8 6 L20 6 L20 24 L8 24 Z'};
+  var SHIRT = '<svg width="20" height="20" viewBox="0 0 28 28" fill="#DDEFE3" stroke="#2F8F5B" stroke-width="2" stroke-linejoin="round"><path d="M10 4 L4 8 L6 13 L8 12 L8 24 L20 24 L20 12 L22 13 L24 8 L18 4 C17 6 15.5 7 14 7 C12.5 7 11 6 10 4 Z"></path></svg>';
+  var g = {total:180, left:180, count:0, step:0, order:[], timer:null};
+  function shuffle(){ var a = ['co','trai','phai','than']; for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function drawSeq(){
+    $('seq').innerHTML = g.order.map(function(id,i){ var c = i < g.step ? 'done' : (i === g.step ? 'next' : ''); return '<li class="'+c+'"><small>Bước '+(i+1)+'</small>'+NAMES[id]+'</li>'; }).join('');
+  }
+  function drawGame(){
+    $('clock').textContent = mmss(g.left);
+    $('count').textContent = g.count;
+    $('timebar').style.width = (g.left/g.total*100) + '%';
+    $('shirts').innerHTML = new Array(Math.min(g.count,30)+1).join(SHIRT);
+    drawSeq();
+  }
+  $('pads').innerHTML = ['co','trai','phai','than'].map(function(id){ return '<button type="button" class="pad" data-part="'+id+'"><svg width="30" height="30" viewBox="0 0 28 28" fill="none" stroke="#1D6B43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+ICON[id]+'"></path></svg>'+NAMES[id]+'</button>'; }).join('');
+  $('pads').addEventListener('click', function(e){
+    var b = e.target.closest('[data-part]'); if (!b || !g.timer) return;
+    var w = $('wrong');
+    if (g.order[g.step] === b.dataset.part){
+      w.hidden = true;
+      if (g.step === 3){ g.count++; g.step = 0; g.order = shuffle(); } else g.step++;
+    } else { g.step = 0; w.hidden = false; w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); }
+    drawGame();
+  });
+  function endGame(){
+    clearInterval(g.timer); g.timer = null; g.left = 0;
+    $('workBox').hidden = true; $('doneBox').hidden = false;
+    $('doneCount').textContent = g.count; $('slipCount').textContent = g.count;
+    drawGame();
+  }
+  $('startBtn').addEventListener('click', function(){
+    g.left = g.total; g.count = 0; g.step = 0; g.order = shuffle();
+    $('idleBox').hidden = true; $('doneBox').hidden = true; $('workBox').hidden = false; $('wrong').hidden = true;
+    drawGame();
+    g.timer = setInterval(function(){ g.left--; if (g.left <= 0) endGame(); else drawGame(); }, 1000);
+  });
+  $('finishBtn').addEventListener('click', function(){ if (g.count < 15) g.count = 15; endGame(); });
+  g.order = shuffle(); drawGame();
+
+  /* SV5 */
+  $('termsBtn').addEventListener('click', function(){
+    var on = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', on);
+    this.textContent = on ? 'Ẩn tên gọi' : 'Hiện tên gọi theo Mác';
+    $('gName').textContent = on ? 'Thời gian lao động tất yếu' : 'Làm cho mình';
+    $('aName').textContent = on ? 'Thời gian lao động thặng dư' : 'Làm cho chủ xưởng';
+    $('termsBox').hidden = !on;
+  });
+
+  /* CX1 */
+  $('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var ok = $('user').value.trim() !== '' && $('pass').value !== '';
+    $('loginErr').hidden = ok; if (ok) go('cx2');
+  });
+
+  /* CX2 */
+  var waiting = {'Quỳnh Như':1,'Minh Quân':1,'Tường Vi':1};
+  $('players').innerHTML = DATA.slice(0,27).map(function(d){ var w = waiting[d[0]]; return '<li class="'+(w?'wait':'')+'"><span class="dot"></span>'+esc(d[0])+' <small>'+(w?'đang đọc':'đã ký')+'</small></li>'; }).join('');
+  function cfg(){
+    var nv = Number($('sPrice').value) - Number($('sMat').value);
+    $('newVal').textContent = (nv > 0 ? nv : 0) + ' xu';
+    $('needed').textContent = nv > 0 ? Math.ceil(Number($('sWage').value)/nv) + ' áo' : '–';
+    $('cfgErr').hidden = nv > 0;
+  }
+  ['sSecs','sWage','sPrice','sMat'].forEach(function(id){ $(id).addEventListener('input', cfg); });
+
+  /* CX3: mô phỏng */
+  var L = {e:0, timer:null, jit: DATA.map(function(){ return 0.85 + Math.random()*0.3; })};
+  function drawLive(){
+    var f = L.e/180;
+    var rows = DATA.map(function(d,i){ return {n:d[0], a: L.e >= 180 ? d[1] : Math.min(d[1], Math.floor(d[1]*Math.min(1, f*L.jit[i])))}; }).sort(function(a,b){ return b.a - a.a; });
+    var total = rows.reduce(function(s,r){ return s + r.a; }, 0);
+    $('liveClock').textContent = mmss(180 - L.e);
+    $('liveTotal').textContent = fmt(total);
+    $('board').innerHTML = rows.slice(0,10).map(function(r,i){ return '<li><span class="num" style="font-weight:700;color:var(--ink2)">'+(i+1)+'</span><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(r.n)+'</span><span class="track"><i style="width:'+(r.a/24*100)+'%"></i></span><b class="num" style="text-align:right;font-size:18px">'+r.a+'</b></li>'; }).join('');
+    var rev = total*10, mat = total*6, left = rev - mat - 600;
+    $('bRev').textContent = fmt(rev) + ' xu';
+    $('bMat').textContent = '− ' + fmt(mat) + ' xu';
+    $('bLeft').textContent = (left < 0 ? '− ' : '') + fmt(Math.abs(left)) + ' xu';
+    $('bLeft').style.color = left < 0 ? 'var(--ink2)' : 'var(--amber)';
+    $('leftBox').style.background = left < 0 ? 'var(--ledger)' : 'var(--amber-tint)';
+    $('bNote').textContent = left < 0 ? 'Chưa đủ tiền trả lương. Công nhân đang làm ra phần lương của chính họ.' : 'Đã đủ tiền trả lương. Từ đây, áo may thêm là phần dư của chủ.';
+    $('liveDone').hidden = L.e < 180;
+    $('runBtn').textContent = L.timer ? 'Tạm dừng' : (L.e === 0 ? 'Chạy ca' : (L.e >= 180 ? 'Chạy lại' : 'Chạy tiếp'));
+  }
+  function stopLive(){ clearInterval(L.timer); L.timer = null; drawLive(); }
+  $('runBtn').addEventListener('click', function(){
+    if (L.timer) return stopLive();
+    if (L.e >= 180) L.e = 0;
+    L.timer = setInterval(function(){ L.e = Math.min(180, L.e + ($('fast').checked ? 10 : 1)); if (L.e >= 180) stopLive(); else drawLive(); }, 1000);
+    drawLive();
+  });
+  $('endBtn').addEventListener('click', function(){ L.e = 180; stopLive(); });
+  $('projector').addEventListener('change', function(){ $('books').hidden = this.checked; });
+  drawLive();
+
+  /* CX4: sổ sách */
+  var FLOW = [
+    {l:'Tiền bán áo', t:'Giá trị hàng hóa G = c + v + m', v:'4.320', left:0, w:4320, fill:'var(--green)', c:'var(--ink)', tc:'var(--ink3)'},
+    {l:'Trừ nguyên liệu', t:'Tư bản bất biến (c)', v:'− 2.592', left:1728, w:2592, fill:'#B9D3C2', c:'var(--ink)', tc:'var(--ink3)'},
+    {l:'Trừ lương 30 bạn', t:'Tư bản khả biến (v)', v:'− 600', left:1128, w:600, fill:'var(--leaf)', c:'var(--green)', tc:'var(--green)'},
+    {l:'Chủ xưởng còn dư', t:'Giá trị thặng dư (m)', v:'1.128', left:0, w:1128, fill:'repeating-linear-gradient(135deg,#E8A23A 0 8px,#F2C47A 8px 16px)', c:'var(--amber-deep)', tc:'var(--amber-deep)'}
+  ];
+  function drawFlow(on){
+    $('flow').innerHTML = FLOW.map(function(f,i){ return '<div class="row"><div><b style="font-size:17px">'+f.l+'</b>'+(on?'<div class="tag" style="color:'+f.tc+'">'+f.t+'</div>':'')+'</div><div class="tr"><i style="left:'+(f.left/4320*100)+'%;width:'+(f.w/4320*100)+'%;background:'+f.fill+';animation-delay:'+(i*250)+'ms"></i></div><div class="val num" style="color:'+f.c+'">'+f.v+'</div></div>'; }).join('');
+  }
+  var rows = DATA.map(function(d){ var v = d[1]*4; return {n:d[0], a:d[1], v:v, m:v-20, t:mmss(900/d[1])}; });
+  $('avgTime').textContent = mmss(rows.reduce(function(s,r){ return s + 900/r.a; },0)/rows.length);
+  $('stack').innerHTML = rows.map(function(r){ return '<li><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(r.n)+'</span><span class="s"><span style="width:'+(20/96*100)+'%;background:var(--leaf);border-radius:4px 0 0 4px"></span><span class="hatch" style="width:'+(r.m/96*100)+'%;border-radius:0 4px 4px 0"></span></span><b class="num" style="text-align:right">'+r.v+' xu</b></li>'; }).join('');
+  $('tbody').innerHTML = rows.map(function(r){ return '<tr><th scope="row">'+esc(r.n)+'</th><td>'+r.a+'</td><td>'+r.v+' xu</td><td style="color:var(--green);font-weight:700">20 xu</td><td style="color:var(--amber);font-weight:700">'+r.m+' xu</td><td>'+r.t+'</td></tr>'; }).join('');
+  drawFlow(false);
+  $('ledgerTerms').addEventListener('click', function(){
+    var on = this.getAttribute('aria-pressed') !== 'true';
+    this.setAttribute('aria-pressed', on);
+    this.textContent = on ? 'Ẩn tên gọi' : 'Hiện tên gọi theo Mác';
+    $('ratioName').textContent = on ? 'Tỷ suất giá trị thặng dư m′ = m ÷ v' : 'Phần dư so với tiền lương';
+    $('kG').textContent = on ? 'Giá trị sức lao động (lương)' : 'Phần trả lương';
+    $('kA').textContent = on ? 'Giá trị thặng dư' : 'Phần cho chủ xưởng';
+    drawFlow(on);
+  });
+  $('csvBtn').addEventListener('click', function(){ $('csvNote').hidden = false; });
+})();
+</script>

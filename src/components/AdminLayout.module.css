@@ -1,0 +1,49 @@
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--paper);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  padding-top: max(16px, env(safe-area-inset-top, 0px));
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+}
+
+.logo {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.content {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .head {
+    padding-inline: 16px;
+  }
+}

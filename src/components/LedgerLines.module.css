@@ -1,0 +1,35 @@
+.lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.line:last-child {
+  border-bottom: 0;
+}
+
+.line[data-tall] {
+  min-height: 64px;
+}
+
+.v {
+  text-align: right;
+}
+
+.lines[data-variant='form'] .k {
+  color: var(--ink2);
+  font-size: 14px;
+}
+
+.lines[data-variant='form'] .v {
+  font-weight: 600;
+  font-size: 15px;
+}

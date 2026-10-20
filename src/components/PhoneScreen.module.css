@@ -1,0 +1,35 @@
+.outer {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--paper);
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  /* Tai thỏ, thanh home và cạnh cong của iPhone */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.screen[data-tone='ledger'] {
+  background: var(--ledger);
+}
+
+@media (min-width: 481px) {
+  .outer {
+    background: var(--ledger);
+  }
+  .screen {
+    border-inline: 1px solid var(--rule);
+  }
+}

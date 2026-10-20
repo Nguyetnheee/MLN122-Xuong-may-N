@@ -1,0 +1,74 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  margin-top: 10px;
+  font-size: 17px;
+  color: var(--ink2);
+  max-width: 640px;
+}
+
+.steps {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ink3);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  max-width: 560px;
+}
+
+.note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.panelTitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.stats {
+  margin: 0;
+}
+
+.stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  align-items: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+.stats div:last-child {
+  border-bottom: 0;
+}
+
+.stats dt {
+  color: var(--ink2);
+  font-size: 14px;
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: 700;
+}

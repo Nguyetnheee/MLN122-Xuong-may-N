@@ -1,0 +1,32 @@
+/* Bảng màu và font lấy nguyên từ docs/giao-dien-mau.html (bản nhóm đã duyệt).
+   Chỉ một giao diện sáng: trắng – xanh lá; màu cam chỉ dành cho phần thuộc về chủ xưởng. */
+:root {
+  --paper: #FFFFFF;
+  --ledger: #F2F7F3;
+  --rule: #D3E4D8;
+  --ink: #142019;
+  --ink2: #4A5D51;
+  --ink3: #2E4537;
+  --green: #1D6B43;
+  --leaf: #2F8F5B;
+  --mint: #E3EEE6;
+  --muted-btn: #C9DCCF;
+  --amber: #A65F00;
+  --amber-deep: #8A4F00;
+  --amber-fill: #E8A23A;
+  --amber-soft: #F2C47A;
+  --amber-tint: #FBEBD3;
+  --font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Các màu phụ mà file mẫu viết thẳng trong HTML, gom lại thành biến */
+  --shirt-fill: #DDEFE3;       /* áo nhỏ trên màn may áo */
+  --c-fill: #B9D3C2;           /* thanh nguyên liệu trong dòng tiền */
+  --amber-ink: #5C3A00;        /* chữ trên nền cam nhạt */
+  --amber-ink-strong: #3D2600; /* chữ trên nền cam sọc */
+  --wait-border: #E6D3B3;      /* viền công nhân đang đọc hợp đồng */
+  --qr-border: #9DC3AA;        /* viền ô QR */
+  --on-green: #D6EBDD;         /* chữ phụ trên nền xanh đậm */
+  --on-green-mute: #BFE0CB;
+
+  color-scheme: light;
+}

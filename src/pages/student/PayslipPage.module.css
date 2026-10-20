@@ -1,0 +1,84 @@
+.head {
+  padding-top: 32px;
+  padding-bottom: 0;
+}
+
+.cap {
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.slip {
+  margin: 22px 20px 0;
+  background: var(--paper);
+  border-radius: 18px;
+  padding: 20px 22px;
+}
+
+.slipHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--ink2);
+  margin-bottom: 8px;
+}
+
+/* Đường đục lỗ của phiếu lương */
+.perf {
+  height: 0;
+  border-top: 2px dashed var(--rule);
+  margin: 8px 0 14px;
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.total b {
+  font-size: 16px;
+}
+
+.amount {
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.rank {
+  margin: 14px 20px 0;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--paper);
+  display: flex;
+  justify-content: space-between;
+}
+
+.rank span {
+  color: var(--ink2);
+}
+
+.rank b {
+  font-size: 18px;
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.look {
+  font-size: 15px;
+  color: var(--ink3);
+}

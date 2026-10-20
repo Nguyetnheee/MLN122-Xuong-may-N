@@ -1,0 +1,93 @@
+.login {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--paper);
+}
+
+/* Cột xanh có dòng kẻ ngang mờ như trang sổ */
+.l {
+  flex: 1 1 380px;
+  background: var(--green);
+  color: #fff;
+  padding: 44px 48px;
+  padding-top: max(44px, env(safe-area-inset-top, 0px));
+  padding-left: max(48px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 36px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 63px,
+    rgba(255, 255, 255, 0.12) 63px,
+    rgba(255, 255, 255, 0.12) 64px
+  );
+}
+
+.factory {
+  font-weight: 700;
+}
+
+.title {
+  font-size: 52px;
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  margin-top: 18px;
+  font-size: 17px;
+  color: var(--on-green);
+  max-width: 420px;
+}
+
+.note {
+  font-size: 14px;
+  color: var(--on-green-mute);
+}
+
+.r {
+  flex: 999 1 340px;
+  padding: 44px 24px;
+  padding-bottom: max(44px, env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formTitle {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.submit {
+  margin-top: 8px;
+}
+
+.small {
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+@media (max-width: 640px) {
+  .l {
+    padding: 32px 24px;
+    padding-top: max(32px, env(safe-area-inset-top, 0px));
+  }
+  .title {
+    font-size: 40px;
+  }
+}

@@ -1,0 +1,50 @@
+.tile {
+  padding: 22px;
+  border-radius: 18px;
+}
+
+.value {
+  font-size: 60px;
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.note {
+  font-size: 14px;
+}
+
+.tile[data-tone='amber'] {
+  background: var(--amber-tint);
+}
+.tile[data-tone='amber'] .label,
+.tile[data-tone='amber'] .note {
+  color: var(--amber-ink);
+}
+.tile[data-tone='amber'] .value {
+  color: var(--amber-deep);
+}
+
+.tile[data-tone='green'] {
+  background: var(--ledger);
+}
+.tile[data-tone='green'] .label,
+.tile[data-tone='green'] .note {
+  color: var(--ink3);
+}
+.tile[data-tone='green'] .value {
+  color: var(--green);
+}
+
+.tile[data-tone='outline'] {
+  border: 2px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .value {
+    font-size: 48px;
+  }
+}

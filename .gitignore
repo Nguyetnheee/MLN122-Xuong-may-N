@@ -1,0 +1,8 @@
+node_modules
+dist
+*.local
+
+# Biến môi trường thật: không commit
+.env
+.env.*
+!.env.example

@@ -1,0 +1,93 @@
+.head {
+  padding-bottom: 0;
+}
+
+.cap {
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.title {
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.timecard {
+  margin: 20px 20px 0;
+  padding: 16px;
+  border: 2px solid var(--rule);
+  border-radius: 18px;
+}
+
+.legend {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.legend b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.legendG {
+  color: var(--green);
+}
+
+.legendA {
+  color: var(--amber);
+}
+
+.books {
+  margin: 14px 20px 0;
+  padding: 6px 18px;
+  border-radius: 18px;
+  background: var(--ledger);
+}
+
+.booksNote {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.v {
+  font-size: 18px;
+}
+
+.green {
+  color: var(--green);
+}
+
+.terms {
+  margin: 0 20px 14px;
+  padding: 16px 18px;
+  border: 2px solid var(--green);
+  border-radius: 14px;
+}
+
+.termRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.termVal {
+  font-size: 22px;
+}
+
+.muted {
+  color: var(--ink2);
+}
+
+.foot {
+  padding-top: 0;
+}
