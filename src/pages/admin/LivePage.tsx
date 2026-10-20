@@ -132,7 +132,7 @@ export function LivePage() {
 
           {room.status === 'ended' && (
             <div className={`status ${styles.done}`}>
-              <b>Hết ca. Mọi công nhân nhận {room.wage} xu.</b>
+              <b>Hết ca.</b>
               <button type="button" className="sbtn fill" onClick={toReveal} disabled={busy}>
                 Sang Vòng 2: lật sổ sách
               </button>

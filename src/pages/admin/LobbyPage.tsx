@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../../components/AdminLayout';
 import { MAX_PLAYERS, roomToConfig, signOutOwner, startShift, updateSettings } from '../../lib/api';
 import { newValuePerShirt, shirtsToCoverWage, validateConfig, type ShiftConfig } from '../../lib/economics';
-import { useOwnerRoom, usePlayers, useStatusRedirect } from '../../state/OwnerRoom';
+import { useOwnerRoom, usePlayers, useStatusRedirect, useStoredFlag } from '../../state/OwnerRoom';
 import styles from './LobbyPage.module.css';
 
 const FIELDS: { key: keyof ShiftConfig; id: string; label: string }[] = [
@@ -37,6 +37,8 @@ export function LobbyPage() {
   const { room, refresh } = useOwnerRoom();
   const { players, loaded } = usePlayers(room.id);
   const navigate = useNavigate();
+  // Dùng chung lựa chọn với màn Đang chạy ca: bật một lần là ẩn cả cài đặt lẫn sổ sách
+  const [projector, setProjector] = useStoredFlag('ca-lam:che-do-chieu');
 
   // Giữ dạng chữ để ô nhập được phép trống khi đang gõ
   const [draft, setDraft] = useState<Draft>(() => toDraft(roomToConfig(room)));
@@ -133,6 +135,10 @@ export function LobbyPage() {
       chip={`Phòng chờ, phòng ${room.code}`}
       actions={
         <>
+          <label className="check" htmlFor="projector">
+            <input id="projector" type="checkbox" checked={projector} onChange={(e) => setProjector(e.target.checked)} />
+            Chế độ chiếu: ẩn cài đặt
+          </label>
           <button type="button" className="sbtn" onClick={() => navigate('/admin/thu-tai')}>
             Thử tải
           </button>
@@ -190,7 +196,7 @@ export function LobbyPage() {
         </div>
 
         <aside className="aside">
-          <div className="panel">
+          <div className="panel" hidden={projector}>
             <div className={styles.panelHead}>
               <h2 className={styles.panelTitle}>Cài đặt ca làm</h2>
               <span className={styles.saveNote} role="status">
