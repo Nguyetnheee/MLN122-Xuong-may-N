@@ -81,7 +81,8 @@ File `.env` đã nằm trong `.gitignore`, đừng commit nó.
 | `/admin/so-sach` | Chủ xưởng | Lật sổ sách, tên gọi theo Mác, xuất CSV, chơi lại |
 | `/admin/thu-tai` | Chủ xưởng | Tạo 30 người chơi ảo để tập dượt |
 
-> Hiện tại các màn **sinh viên** vẫn chạy bằng dữ liệu giả cục bộ; các màn **chủ xưởng** đã nối Supabase.
+Điện thoại sinh viên tự chuyển màn theo trạng thái phòng do chủ xưởng điều khiển
+(phòng chờ → may áo → phiếu lương → Vòng 2). Tải lại trang vẫn giữ chỗ trong phòng.
 
 ## Tập dượt khi không đủ người
 

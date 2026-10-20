@@ -5,6 +5,7 @@ import { JoinPage } from './pages/student/JoinPage';
 import { PayslipPage } from './pages/student/PayslipPage';
 import { RevealPage } from './pages/student/RevealPage';
 import { SewingPage } from './pages/student/SewingPage';
+import { RequireStudent } from './state/StudentRoom';
 
 // Màn chủ xưởng tải riêng khi cần: điện thoại sinh viên không phải tải thư viện QR, trang thử tải…
 const RequireOwner = lazy(() => import('./state/OwnerRoom').then((m) => ({ default: m.RequireOwner })));
@@ -31,10 +32,12 @@ export function App() {
         <Routes>
           {/* Sinh viên */}
           <Route path="/" element={<JoinPage />} />
-          <Route path="/hop-dong" element={<ContractPage />} />
-          <Route path="/may-ao" element={<SewingPage />} />
-          <Route path="/phieu-luong" element={<PayslipPage />} />
-          <Route path="/lat-bai" element={<RevealPage />} />
+          <Route element={<RequireStudent />}>
+            <Route path="/hop-dong" element={<ContractPage />} />
+            <Route path="/may-ao" element={<SewingPage />} />
+            <Route path="/phieu-luong" element={<PayslipPage />} />
+            <Route path="/lat-bai" element={<RevealPage />} />
+          </Route>
 
           {/* Chủ xưởng */}
           <Route path="/admin/dang-nhap" element={<LoginPage />} />

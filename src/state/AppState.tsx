@@ -1,31 +1,33 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
-import { DEFAULT_CONFIG, type ShiftConfig } from '../lib/economics';
+import type { PlayerCredentials } from '../lib/api';
 
-/** Trạng thái cục bộ (chưa có backend), lưu tạm trong sessionStorage của trình duyệt. */
+/**
+ * Phiên của sinh viên trên điện thoại, lưu trong localStorage để tải lại trang
+ * (hoặc khóa màn hình rồi mở lại) vẫn giữ được chỗ trong phòng.
+ */
 export interface StudentSession {
+  /** Mã phòng 4 số */
   room: string;
   name: string;
-  signed: boolean;
-  /** null = chưa chơi màn may áo */
-  shirts: number | null;
+  /** Nhận từ join_room; null = chưa vào phòng nào */
+  credentials: PlayerCredentials | null;
 }
 
 const STUDENT_KEY = 'ca-lam:sinh-vien';
-const CONFIG_KEY = 'ca-lam:cai-dat';
-const EMPTY_STUDENT: StudentSession = { room: '', name: '', signed: false, shirts: null };
+const EMPTY_STUDENT: StudentSession = { room: '', name: '', credentials: null };
 
-function readStore<T extends object>(key: string, fallback: T): T {
+function readStore(): StudentSession {
   try {
-    const raw = sessionStorage.getItem(key);
-    return raw ? { ...fallback, ...JSON.parse(raw) } : fallback;
+    const raw = localStorage.getItem(STUDENT_KEY);
+    return raw ? { ...EMPTY_STUDENT, ...JSON.parse(raw) } : EMPTY_STUDENT;
   } catch {
-    return fallback;
+    return EMPTY_STUDENT;
   }
 }
 
-function writeStore(key: string, value: unknown) {
+function writeStore(value: StudentSession) {
   try {
-    sessionStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(STUDENT_KEY, JSON.stringify(value));
   } catch {
     /* Trình duyệt chặn lưu: vẫn chơi được, chỉ không nhớ khi tải lại trang */
   }
@@ -34,33 +36,22 @@ function writeStore(key: string, value: unknown) {
 interface AppState {
   student: StudentSession;
   updateStudent: (patch: Partial<StudentSession>) => void;
-  config: ShiftConfig;
-  setConfig: (c: ShiftConfig) => void;
 }
 
 const Ctx = createContext<AppState | null>(null);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
-  const [student, setStudent] = useState(() => readStore(STUDENT_KEY, EMPTY_STUDENT));
-  const [config, setConfigState] = useState(() => readStore(CONFIG_KEY, DEFAULT_CONFIG));
+  const [student, setStudent] = useState(readStore);
 
   const updateStudent = useCallback((patch: Partial<StudentSession>) => {
     setStudent((prev) => {
       const next = { ...prev, ...patch };
-      writeStore(STUDENT_KEY, next);
+      writeStore(next);
       return next;
     });
   }, []);
 
-  const setConfig = useCallback((c: ShiftConfig) => {
-    writeStore(CONFIG_KEY, c);
-    setConfigState(c);
-  }, []);
-
-  const value = useMemo(
-    () => ({ student, updateStudent, config, setConfig }),
-    [student, updateStudent, config, setConfig],
-  );
+  const value = useMemo(() => ({ student, updateStudent }), [student, updateStudent]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

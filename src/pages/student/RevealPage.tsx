@@ -1,22 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LedgerLines } from '../../components/LedgerLines';
 import { PhoneScreen } from '../../components/PhoneScreen';
 import { TimeSplitBar } from '../../components/TimeSplitBar';
 import { newValuePerShirt, shirtsToCoverWage, surplusRate, workerResult } from '../../lib/economics';
-import { formatXu, mmss } from '../../lib/format';
-import { MOCK_PLAYER_NAME, MOCK_PLAYER_SHIRTS } from '../../lib/mockData';
-import { useAppState } from '../../state/AppState';
+import { formatDuration, formatXu, mmss } from '../../lib/format';
+import { NotHired, useStudentRedirect, useStudentRoom } from '../../state/StudentRoom';
 import styles from './RevealPage.module.css';
 
-/** Vòng 2 trên điện thoại: 3 phút của bạn bị chia thế nào. */
+/** Vòng 2 trên điện thoại: thời gian của bạn bị chia thế nào. */
 export function RevealPage() {
-  const { student, config } = useAppState();
-  const [marx, setMarx] = useState(false);
-  const name = student.name || MOCK_PLAYER_NAME;
-  const shirts = student.shirts ?? MOCK_PLAYER_SHIRTS;
+  const redirect = useStudentRedirect();
+  const { room, me } = useStudentRoom();
+  // Chủ xưởng bật "Hiện tên gọi theo Mác" thì mọi điện thoại đổi nhãn theo; sinh viên vẫn tự bật/tắt được
+  const [marx, setMarx] = useState(room.show_terms);
+  useEffect(() => setMarx(room.show_terms), [room.show_terms]);
 
+  if (redirect) return redirect;
+  if (!me.signed) return <NotHired />;
+  // public_rooms chỉ trả giá bán và nguyên liệu khi phòng ở Vòng 2
+  if (room.price === null || room.material === null) return null;
+
+  const config = { shiftSeconds: room.duration_sec, wage: room.wage, price: room.price, material: room.material };
   const nv = newValuePerShirt(config.price, config.material);
-  const r = workerResult(name, shirts, config);
+  const shirts = me.shirts;
+  const r = workerResult(me.name, shirts, config);
   const T = config.shiftSeconds;
   const cover = r.secondsToCoverWage;
   const greenPct = cover === null ? 100 : (cover / T) * 100;
@@ -30,8 +37,8 @@ export function RevealPage() {
   return (
     <PhoneScreen>
       <div className={`ph-pad ${styles.head}`}>
-        <div className={styles.cap}>Vòng 2, {name}</div>
-        <h1 className={styles.title}>3 phút của bạn đã đi đâu?</h1>
+        <div className={styles.cap}>Vòng 2, {me.name}</div>
+        <h1 className={styles.title}>{formatDuration(T)} của bạn đã đi đâu?</h1>
       </div>
 
       <div className={styles.timecard}>

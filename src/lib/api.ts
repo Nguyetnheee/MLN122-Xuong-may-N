@@ -186,6 +186,13 @@ export async function getPublicRoom(roomId: string): Promise<PublicRoom | null> 
   return data as PublicRoom | null;
 }
 
+/** Một người chơi theo id; null nếu đã bị xóa (chủ xưởng bấm "Chơi lại") */
+export async function getPlayer(playerId: string): Promise<Player | null> {
+  const { data, error } = await supabase.from('players').select('*').eq('id', playerId).maybeSingle();
+  if (error) throw toApiError(error);
+  return data as Player | null;
+}
+
 /** Phòng mới nhất của chủ xưởng đang đăng nhập (RLS chỉ trả phòng của mình) */
 export async function getMyLatestRoom(): Promise<Room | null> {
   const { data, error } = await supabase

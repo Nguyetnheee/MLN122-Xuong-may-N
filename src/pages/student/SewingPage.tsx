@@ -1,71 +1,61 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { PhoneScreen } from '../../components/PhoneScreen';
 import { ShirtIcon, ShirtPartIcon } from '../../components/ShirtIcon';
+import { makeShirt } from '../../lib/api';
 import { mmss } from '../../lib/format';
 import { PART_NAMES, SHIRT_PARTS, shuffledParts, type ShirtPart } from '../../lib/game';
-import { useAppState } from '../../state/AppState';
+import { useCountdown } from '../../lib/useServerClock';
+import { NotHired, useStudentRedirect, useStudentRoom } from '../../state/StudentRoom';
 import styles from './SewingPage.module.css';
-
-type Phase = 'idle' | 'work' | 'done';
 
 /** Số áo nhỏ tối đa vẽ ra phía trên, tránh tràn màn hình */
 const MAX_SHIRT_ICONS = 30;
 
 /**
- * Màn chơi may áo (chạy cục bộ). Bấm đúng 4 bước theo thứ tự = 1 áo;
+ * Màn chơi may áo. Bấm đúng 4 bước theo thứ tự = 1 áo, gửi lên server (make_shirt);
  * bấm sai thì làm lại chiếc đó từ bước 1. Không hiện giá trị tiền của áo.
  */
 export function SewingPage() {
-  const { config, updateStudent } = useAppState();
-  const navigate = useNavigate();
-  const total = config.shiftSeconds;
+  const redirect = useStudentRedirect();
+  const { room, me, credentials } = useStudentRoom();
+  const total = room.duration_sec;
+  const left = useCountdown(room.ends_at);
+  const working = left !== null && left > 0;
 
-  const [phase, setPhase] = useState<Phase>('idle');
-  const [left, setLeft] = useState(total);
-  const [count, setCount] = useState(0);
+  /** Số áo server đã ghi nhận */
+  const [confirmed, setConfirmed] = useState(me.shirts);
+  const confirmedRef = useRef(me.shirts);
+  /** Số áo đã gửi nhưng server chưa trả lời */
+  const [pending, setPending] = useState(0);
   const [step, setStep] = useState(0);
   const [order, setOrder] = useState<ShirtPart[]>(() => shuffledParts());
-  /** 0 = không có cảnh báo; mỗi lần bấm sai tăng lên để chạy lại hiệu ứng rung */
-  const [wrongKey, setWrongKey] = useState(0);
-  const endAt = useRef(0);
+  /** Cảnh báo; mỗi lần đổi key thì chạy lại hiệu ứng rung */
+  const [warning, setWarning] = useState<{ key: number; text: string } | null>(null);
+  const count = confirmed + pending;
 
-  // Đếm ngược theo đồng hồ thật để không bị lệch khi tab bị chậm
-  useEffect(() => {
-    if (phase !== 'work') return;
-    const id = window.setInterval(() => {
-      const remain = Math.max(0, Math.ceil((endAt.current - Date.now()) / 1000));
-      setLeft(remain);
-      if (remain <= 0) setPhase('done');
-    }, 250);
-    return () => window.clearInterval(id);
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase === 'done') updateStudent({ shirts: count });
-  }, [phase, count, updateStudent]);
-
-  function start() {
-    endAt.current = Date.now() + total * 1000;
-    setLeft(total);
-    setCount(0);
-    setStep(0);
-    setOrder(shuffledParts());
-    setWrongKey(0);
-    setPhase('work');
+  function warn(text: string) {
+    setWarning((w) => ({ key: (w?.key ?? 0) + 1, text }));
   }
 
-  function finishNow() {
-    setLeft(0);
-    setPhase('done');
+  function sendShirt() {
+    setPending((p) => p + 1);
+    makeShirt(credentials)
+      .then((n) => {
+        // Server trả số áo hiện tại; nếu không tăng nghĩa là chiếc này không được tính
+        if (n <= confirmedRef.current) warn('Chiếc áo vừa rồi không được tính: bấm chậm lại một chút.');
+        confirmedRef.current = Math.max(confirmedRef.current, n);
+        setConfirmed(confirmedRef.current);
+      })
+      .catch(() => warn('Mất kết nối, chiếc áo vừa rồi chưa được tính.'))
+      .finally(() => setPending((p) => p - 1));
   }
 
   function press(part: ShirtPart) {
-    if (phase !== 'work') return;
+    if (!working) return;
     if (order[step] === part) {
-      setWrongKey(0);
+      setWarning(null);
       if (step === order.length - 1) {
-        setCount((c) => c + 1);
+        sendShirt();
         setStep(0);
         setOrder(shuffledParts());
       } else {
@@ -73,16 +63,21 @@ export function SewingPage() {
       }
     } else {
       setStep(0);
-      setWrongKey((k) => k + 1);
+      warn('Sai thứ tự. Làm lại chiếc áo này từ bước 1.');
     }
   }
+
+  if (redirect) return redirect;
+  if (!me.signed) return <NotHired />;
+
+  const shown = left ?? total;
 
   return (
     <PhoneScreen>
       <div className={`ph-pad ${styles.top}`}>
         <div>
           <div className={styles.cap}>Còn lại</div>
-          <div className={`${styles.big} num`}>{mmss(left)}</div>
+          <div className={`${styles.big} num`}>{mmss(shown)}</div>
         </div>
         <div className={styles.right}>
           <div className={styles.cap}>Áo đã may</div>
@@ -93,7 +88,7 @@ export function SewingPage() {
       </div>
 
       <div className={styles.bar} aria-hidden="true">
-        <i style={{ width: `${(left / total) * 100}%` }} />
+        <i style={{ width: `${(shown / total) * 100}%` }} />
       </div>
 
       <div className={styles.shirts} aria-hidden="true">
@@ -112,25 +107,16 @@ export function SewingPage() {
             </li>
           ))}
         </ol>
-        {wrongKey > 0 && (
-          <p key={wrongKey} className={`warn shake ${styles.wrong}`} role="alert">
-            Sai thứ tự. Làm lại chiếc áo này từ bước 1.
+        {warning && (
+          <p key={warning.key} className={`warn shake ${styles.wrong}`} role="alert">
+            {warning.text}
           </p>
         )}
       </div>
 
       <div className="grow" />
 
-      {phase === 'idle' && (
-        <div className={`ph-pad ${styles.stack}`}>
-          <p className={styles.hint}>Trong buổi học, ca bắt đầu khi chủ xưởng bấm nút. Ở bản thử, bạn tự bắt đầu.</p>
-          <button type="button" className="btn" onClick={start}>
-            Bắt đầu ca
-          </button>
-        </div>
-      )}
-
-      {phase === 'work' && (
+      {working ? (
         <div className={styles.work}>
           <div className={styles.pads}>
             {SHIRT_PARTS.map((part) => (
@@ -140,22 +126,13 @@ export function SewingPage() {
               </button>
             ))}
           </div>
-          <div className={styles.finish}>
-            <button type="button" className="linkbtn" onClick={finishNow}>
-              Bản thử: kết thúc ca ngay
-            </button>
-          </div>
         </div>
-      )}
-
-      {phase === 'done' && (
+      ) : (
         <div className={`ph-pad ${styles.stack}`}>
           <div className="status" role="status">
             <b>Hết ca. Bạn đã may {count} chiếc áo.</b>
           </div>
-          <button type="button" className="btn" onClick={() => navigate('/phieu-luong')}>
-            Nhận lương
-          </button>
+          <p className={styles.hint}>Chờ chủ xưởng phát phiếu lương, màn hình sẽ tự chuyển.</p>
         </div>
       )}
     </PhoneScreen>
