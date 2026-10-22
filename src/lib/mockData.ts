@@ -1,5 +1,5 @@
 /** Tên xưởng hiển thị trên hợp đồng, phiếu lương và header chủ xưởng. */
-export const FACTORY_NAME = 'Xưởng May ABC';
+export const FACTORY_NAME = 'Tập đoàn may mặc N';
 
 const RAW: [string, number][] = [
   ['Minh Anh', 24], ['Gia Huy', 22], ['Thảo Vy', 21], ['Quốc Bảo', 19], ['Ngọc Hân', 18],

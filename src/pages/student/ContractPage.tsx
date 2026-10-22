@@ -47,7 +47,7 @@ export function ContractPage() {
             { label: 'Lương cả ca', value: <span className={`${styles.wage} num`}>{room.wage} xu</span>, tall: true },
           ]}
         />
-        <p className={styles.note}>Lương trả đủ khi hết ca, không phụ thuộc số áo may được.</p>
+        <p className={styles.note}>Cam kết: Ở đây có làm mới có ăn</p>
         {me.signed && (
           <div className={styles.stamp} aria-hidden="true">
             Đã ký
